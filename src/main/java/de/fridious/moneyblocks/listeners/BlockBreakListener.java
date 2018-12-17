@@ -55,7 +55,7 @@ public class BlockBreakListener implements Listener {
                  */
                 final int money = GeneralUtil.RANDOM.nextInt(moneyBlock.getMaximumMoney()-moneyBlock.getMinimumMoney())+moneyBlock.getMinimumMoney();
                 if(money > 0) {
-                    MoneyBlocksMoneyEarnedEvent moneyEarnedEvent = new MoneyBlocksMoneyEarnedEvent(player, block, money);
+                    MoneyBlocksMoneyEarnedEvent moneyEarnedEvent = new MoneyBlocksMoneyEarnedEvent(player, block, moneyBlock, money);
                     System.out.println("before: " + moneyEarnedEvent.isCancelled());
                     Bukkit.getPluginManager().callEvent(moneyEarnedEvent);
                     System.out.println("after: " + moneyEarnedEvent.isCancelled());
