@@ -41,6 +41,6 @@ public class MoneyBlockPlayerManager {
     }
 
     public void createMoneyBlockPlayer(UUID uuid) {
-        if(getMoneyBlockPlayer(uuid) != null)this.moneyBlockPlayers.add(new MoneyBlockPlayer(uuid));
+        if(getMoneyBlockPlayer(uuid) == null)this.moneyBlockPlayers.add(new MoneyBlockPlayer(uuid));
     }
 }
