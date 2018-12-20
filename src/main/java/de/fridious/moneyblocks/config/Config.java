@@ -8,6 +8,7 @@ package de.fridious.moneyblocks.config;
 
 import de.fridious.moneyblocks.MoneyBlocks;
 import de.fridious.moneyblocks.moneyblock.MoneyBlock;
+import de.fridious.moneyblocks.moneyblock.MoneyBlockCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,6 +27,7 @@ public class Config extends SimpleConfig {
     private boolean soundEnabled, hologramEnabled, messageEnabled, cooldownEnabled;
     private List<String> hologramLines;
     private long cooldown;
+    private int maxCommandRuns;
 
     public Config() {
         super(new File(MoneyBlocks.getInstance().getDataFolder(), "config.yml"));
@@ -45,6 +47,7 @@ public class Config extends SimpleConfig {
         this.hologramLines = Arrays.asList("Congratulation!", "You get [money] money");
         this.cooldownEnabled = true;
         this.cooldown = 5000;
+        this.maxCommandRuns = -1;
     }
 
     @Override
@@ -62,10 +65,12 @@ public class Config extends SimpleConfig {
         getKeys("moneyblocks").forEach((key)-> MoneyBlocks.getInstance().getMoneyBlockManager().getMoneyBlocks().add(getMoneyBlockFromConfig(key)));
         this.hologramEnabled = getBooleanValue("hologram.enabled");
         this.hologramLines = getMessageListValue("hologram.lines");
+        this.maxCommandRuns = getIntValue("settings.maxcommandruns");
     }
 
     @Override
     protected void registerDefaults() {
+        addValue("settings.maxcommandruns", this.maxCommandRuns);
         addValue("messages.prefix.chat", this.chatPrefix);
         addValue("messages.prefix.console", this.consolePrefix);
         addValue("messages.blockbreak.enabled", this.messageEnabled);
@@ -78,8 +83,11 @@ public class Config extends SimpleConfig {
         addValue("sound.pitch", this.soundPitch);
         addValue("hologram.enabled", this.hologramEnabled);
         addValue("hologram.lines", this.hologramLines);
-        addMoneyBlockToConfig(Material.GOLD_ORE, 5, 15, 65, "world_nether", "world_end");
-        addMoneyBlockToConfig(Material.IRON_ORE, 90, 5, 25, "world1", "world8");
+        addMoneyBlockToConfig(Material.IRON_ORE, 20, 5, 65
+                , Arrays.asList("world_nether", "world_end")
+                , Arrays.asList(new MoneyBlockCommand("say", "me has [money]$", MoneyBlockCommand.CommandRunner.PLAYER, 40),
+            new MoneyBlockCommand("gamemode", "gamemode creative [player]", MoneyBlockCommand.CommandRunner.CONSOLE, 10)));
+        addMoneyBlockToConfig(Material.GOLD_ORE, 5, 20, 150, Arrays.asList("world1", "world8"), Arrays.asList());
     }
 
     @Override
@@ -161,12 +169,25 @@ public class Config extends SimpleConfig {
      * @param path
      * @return MoneyBlock
      */
+    @SuppressWarnings("Rewritten on 20.12.2018")
     private MoneyBlock getMoneyBlockFromConfig(String path) {
         return new MoneyBlock(Material.getMaterial(path),
                 getIntValue("moneyblocks."+path+".rewardchance"),
                 getIntValue("moneyblocks."+path+".minimummoney"),
                 getIntValue("moneyblocks."+path+".maximummoney"),
-                getStringListValue("moneyblocks."+path+".disabledworlds"));
+                getStringListValue("moneyblocks."+path+".disabledworlds"),
+                getMoneyBlockCommandsOfMoneyBlock(path));
+    }
+
+    private List<MoneyBlockCommand> getMoneyBlockCommandsOfMoneyBlock(String path) {
+        List<MoneyBlockCommand> moneyBlockCommands = new LinkedList<>();
+        for (String key : getKeys("moneyblocks." + path + ".commands")) {
+            moneyBlockCommands.add(new MoneyBlockCommand(key,
+                    getStringValue("moneyblocks."+path+".commands."+key+".command"),
+                    MoneyBlockCommand.CommandRunner.valueOf(getStringValue("moneyblocks."+path+".commands."+key+".commandrunner")),
+                    getIntValue("moneyblocks."+path+".commands."+key+".chance")));
+        }
+        return moneyBlockCommands;
     }
 
     public boolean isCooldownEnabled() {
@@ -177,6 +198,10 @@ public class Config extends SimpleConfig {
         return cooldown;
     }
 
+    public int getMaxCommandRuns() {
+        return maxCommandRuns;
+    }
+
     /**
      * Add a predefined money block to config
      * @param material
@@ -185,6 +210,8 @@ public class Config extends SimpleConfig {
      * @param maximumMoney
      * @param disabledWorlds
      */
+    @SuppressWarnings("Since 20.12.2018")
+    @Deprecated
     private void addMoneyBlockToConfig(Material material, int rewardChance, int minimumMoney, int maximumMoney, String... disabledWorlds) {
         String subPath = "moneyblocks." + material.toString()+".";
         addValue(subPath+"rewardchance", rewardChance);
@@ -192,4 +219,27 @@ public class Config extends SimpleConfig {
         addValue(subPath+"maximummoney", maximumMoney);
         addValue(subPath+"disabledworlds", disabledWorlds);
     }
+
+    /**
+     * Add a predefined money block to config
+     * @param material
+     * @param rewardChance
+     * @param minimumMoney
+     * @param maximumMoney
+     * @param disabledWorlds
+     * @param commands
+     */
+    private void addMoneyBlockToConfig(Material material, int rewardChance, int minimumMoney, int maximumMoney, List<String> disabledWorlds, List<MoneyBlockCommand> commands) {
+        String subPath = "moneyblocks." + material.toString()+".";
+        addValue(subPath+"rewardchance", rewardChance);
+        addValue(subPath+"minimummoney", minimumMoney);
+        addValue(subPath+"maximummoney", maximumMoney);
+        addValue(subPath+"disabledworlds", disabledWorlds);
+        commands.forEach((command -> {
+            addValue(subPath+"commands."+command.getName()+".command", command.getCommand());
+            addValue(subPath+"commands."+command.getName()+".commandrunner", command.getCommandRunner().toString());
+            addValue(subPath+"commands."+command.getName()+".chance", command.getChance());
+        }));
+    }
+
 }

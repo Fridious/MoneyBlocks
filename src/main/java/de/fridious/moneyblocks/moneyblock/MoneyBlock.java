@@ -3,6 +3,8 @@ package de.fridious.moneyblocks.moneyblock;
 import de.fridious.moneyblocks.utils.GeneralUtil;
 import org.bukkit.Material;
 import org.bukkit.World;
+
+import java.util.LinkedList;
 import java.util.List;
 
 /*
@@ -19,13 +21,26 @@ public class MoneyBlock {
     private final Material material;
     private final int rewardChance, minimumMoney, maximumMoney;
     private final List<String> disabledWorlds;
+    private final List<MoneyBlockCommand> moneyBlockCommands;
 
+    @SuppressWarnings("Since 20.12.2018")
+    @Deprecated
     public MoneyBlock(Material material, int rewardChance, int minimumMoney, int maximumMoney, List<String> disabledWorlds) {
         this.material = material;
         this.rewardChance = rewardChance;
         this.minimumMoney = minimumMoney;
         this.maximumMoney = maximumMoney;
         this.disabledWorlds = disabledWorlds;
+        this.moneyBlockCommands = new LinkedList<>();
+    }
+
+    public MoneyBlock(Material material, int rewardChance, int minimumMoney, int maximumMoney, List<String> disabledWorlds, List<MoneyBlockCommand> moneyBlockCommands) {
+        this.material = material;
+        this.rewardChance = rewardChance;
+        this.minimumMoney = minimumMoney;
+        this.maximumMoney = maximumMoney;
+        this.disabledWorlds = disabledWorlds;
+        this.moneyBlockCommands = moneyBlockCommands;
     }
 
     public Material getMaterial() {
@@ -54,6 +69,10 @@ public class MoneyBlock {
 
     public boolean isDisabledWorld(World world) {
         return isDisabledWorld(world.getName());
+    }
+
+    public List<MoneyBlockCommand> getCommands() {
+        return moneyBlockCommands;
     }
 
     @Override

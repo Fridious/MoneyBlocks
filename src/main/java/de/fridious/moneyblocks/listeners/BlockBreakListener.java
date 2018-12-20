@@ -12,6 +12,7 @@ import de.fridious.moneyblocks.MoneyBlocks;
 import de.fridious.moneyblocks.config.Config;
 import de.fridious.moneyblocks.events.MoneyBlocksMoneyEarnedEvent;
 import de.fridious.moneyblocks.moneyblock.MoneyBlock;
+import de.fridious.moneyblocks.moneyblock.MoneyBlockCommand;
 import de.fridious.moneyblocks.player.MoneyBlockPlayer;
 import de.fridious.moneyblocks.utils.GeneralUtil;
 import org.bukkit.Bukkit;
@@ -92,6 +93,23 @@ public class BlockBreakListener implements Listener {
                      * Add money to player
                      */
                     MoneyBlocks.getInstance().getEconomy().depositPlayer(player, moneyEarnedEvent.getMoney());
+                    /*
+                     * Runs all commands of MoneyBlock with a chance
+                     */
+                    int runs = 0;
+                    for (MoneyBlockCommand command : moneyBlock.getCommands()) {
+                        if(runs <= config.getMaxCommandRuns() || config.getMaxCommandRuns() == -1) {
+                            final int commandChance = GeneralUtil.RANDOM.nextInt(100);
+                            if(commandChance <= command.getChance()) {
+                                String commandString = command.getCommand()
+                                        .replace("[player]", player.getName())
+                                        .replace("[money]", String.valueOf(moneyEarnedEvent.getMoney()))
+                                        .replace("[block]", event.getBlock().getType().toString().toLowerCase());
+                                runs++;
+                                Bukkit.dispatchCommand(command.getCommandRunner() == MoneyBlockCommand.CommandRunner.CONSOLE ? Bukkit.getConsoleSender() : player, commandString);
+                            }
+                        }
+                    }
                 }
             }
         }
