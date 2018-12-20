@@ -56,15 +56,13 @@ public class BlockBreakListener implements Listener {
                 final int money = GeneralUtil.RANDOM.nextInt(moneyBlock.getMaximumMoney()-moneyBlock.getMinimumMoney())+moneyBlock.getMinimumMoney();
                 if(money > 0) {
                     MoneyBlocksMoneyEarnedEvent moneyEarnedEvent = new MoneyBlocksMoneyEarnedEvent(player, block, moneyBlock, money);
-                    System.out.println("before: " + moneyEarnedEvent.isCancelled());
                     Bukkit.getPluginManager().callEvent(moneyEarnedEvent);
-                    System.out.println("after: " + moneyEarnedEvent.isCancelled());
                     if(moneyEarnedEvent.isCancelled()) return;
                     Config config = MoneyBlocks.getInstance().getPluginConfig();
                     /*
                      Check for cool down
                      */
-                    if(config.isCooldownEnabled()) {
+                    if(config.isCooldownEnabled() && !moneyEarnedEvent.isRemoveCooldown()) {
                         MoneyBlockPlayer moneyBlockPlayer = MoneyBlocks.getInstance().getMoneyBlockPlayerManager().getMoneyBlockPlayer(player);
                         if((moneyBlockPlayer.getRewardCooldown()+config.getCooldown()) >= System.currentTimeMillis()) return;
                         moneyBlockPlayer.setRewardCooldown(System.currentTimeMillis());
@@ -93,7 +91,7 @@ public class BlockBreakListener implements Listener {
                     /*
                      * Add money to player
                      */
-                    MoneyBlocks.getInstance().getEconomy().depositPlayer(player, money);
+                    MoneyBlocks.getInstance().getEconomy().depositPlayer(player, moneyEarnedEvent.getMoney());
                 }
             }
         }

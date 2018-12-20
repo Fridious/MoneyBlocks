@@ -16,11 +16,11 @@ import org.bukkit.event.HandlerList;
 public class MoneyBlocksMoneyEarnedEvent extends Event implements Cancellable {
 
     private static final HandlerList handlerList = new HandlerList();
-    private boolean cancelled;
+    private boolean cancelled, removeCooldown;
     private final Player player;
     private final Block block;
     private final MoneyBlock moneyBlock;
-    private final int money;
+    private int money;
 
     @Deprecated
     @SuppressWarnings("Since 17.12.2018")
@@ -30,6 +30,7 @@ public class MoneyBlocksMoneyEarnedEvent extends Event implements Cancellable {
         this.block = block;
         this.money = money;
         this.moneyBlock = null;
+        this.removeCooldown = false;
     }
 
     public MoneyBlocksMoneyEarnedEvent(Player player, Block block, MoneyBlock moneyBlock, int money) {
@@ -37,6 +38,7 @@ public class MoneyBlocksMoneyEarnedEvent extends Event implements Cancellable {
         this.block = block;
         this.moneyBlock = moneyBlock;
         this.money = money;
+        this.removeCooldown = false;
     }
 
     public static HandlerList getHandlerList() {
@@ -67,6 +69,18 @@ public class MoneyBlocksMoneyEarnedEvent extends Event implements Cancellable {
 
     public int getMoney() {
         return money;
+    }
+
+    public boolean isRemoveCooldown() {
+        return removeCooldown;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public void setRemoveCooldown(boolean removeCooldown) {
+        this.removeCooldown = removeCooldown;
     }
 
     @Override
