@@ -83,11 +83,6 @@ public class Config extends SimpleConfig {
         addValue("sound.pitch", this.soundPitch);
         addValue("hologram.enabled", this.hologramEnabled);
         addValue("hologram.lines", this.hologramLines);
-        addMoneyBlockToConfig(Material.IRON_ORE, 20, 5, 65
-                , Arrays.asList("world_nether", "world_end")
-                , Arrays.asList(new MoneyBlockCommand("say", "me has [money]$", MoneyBlockCommand.CommandRunner.PLAYER, 40),
-            new MoneyBlockCommand("gamemode", "gamemode creative [player]", MoneyBlockCommand.CommandRunner.CONSOLE, 10)));
-        addMoneyBlockToConfig(Material.GOLD_ORE, 5, 20, 150, Arrays.asList("world1", "world8"), Arrays.asList());
     }
 
     @Override
