@@ -29,7 +29,7 @@ pipeline {
                     VERSION = readMavenPom().getVersion();
                 }
                 echo "Get version: ${VERSION}"
-                sh "mvn versions:set -DnewVersion=${VERSION}.TEST"
+                sh "mvn versions:set -DnewVersion=${VERSION}.$BUILD_NUMBER"
             }
         }
         stage('Deploy') {
