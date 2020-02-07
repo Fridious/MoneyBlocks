@@ -24,9 +24,9 @@ pipeline {
         }
         stage('Set BuildNumber') {
             steps {
-                def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
+                def test = sh(script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true)
 
-                sh 'mvn versions:set -DnewVersion='+version+'.TEST'
+                sh 'mvn versions:set -DnewVersion=TEST'
             }
         }
         stage('Deploy') {
