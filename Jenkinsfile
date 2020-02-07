@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Set BuildNumber') {
             steps {
-                sh 'mvn versions:set -DnewVersion=${project.version}.$BUILD_NUMBER'
+                sh 'mvn versions:set -DnewVersion=${project.version}.TEST'
             }
         }
         stage('Deploy') {
