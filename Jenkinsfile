@@ -1,7 +1,5 @@
+def VERSION = "NULL";
 pipeline {
-    enviroment {
-        VERSION = readMavenPom().getVersion()
-    }
     agent {
         docker {
             label 'docker'
@@ -27,6 +25,9 @@ pipeline {
         }
         stage('Set BuildNumber') {
             steps {
+                script {
+                    VERSION = readMavenPom().getVersion();
+                }
                 sh 'mvn versions:set -DnewVersion=${VERSION}.TEST'
             }
         }
