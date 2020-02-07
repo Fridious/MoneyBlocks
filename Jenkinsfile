@@ -1,4 +1,5 @@
 pipeline {
+    VERSION = readMavenPom().getVersion()
     agent {
         docker {
             label 'docker'
@@ -24,9 +25,7 @@ pipeline {
         }
         stage('Set BuildNumber') {
             steps {
-                def test = sh(script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true)
-
-                sh 'mvn versions:set -DnewVersion=TEST'
+                sh 'mvn versions:set -DnewVersion=${VERSION}.TEST'
             }
         }
         stage('Deploy') {
