@@ -28,6 +28,7 @@ pipeline {
                 script {
                     VERSION = readMavenPom().getVersion();
                 }
+                echo 'Get version: ${VERSION}'
                 sh 'mvn versions:set -DnewVersion=${VERSION}.TEST'
             }
         }
