@@ -1,5 +1,7 @@
 pipeline {
-    VERSION = readMavenPom().getVersion()
+    enviroment {
+        VERSION = readMavenPom().getVersion()
+    }
     agent {
         docker {
             label 'docker'
