@@ -12,6 +12,14 @@
     <groupId>de.fridious.moneyblocks</groupId>
     <artifactId>MoneyBlocks</artifactId>
     <version>1.2.1</version>
+
+    <distributionManagement>
+        <repository>
+            <id>pretronic</id>
+            <url>https://repository.prematic.net/repository/pretronic/</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
