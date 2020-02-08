@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Print') {
             steps {
-                echo 'Test dev3'
+                echo 'Test dev4'
                 sh 'printenv'
                 echo 'Pulling...' + env.GIT_BRANCH
             }
