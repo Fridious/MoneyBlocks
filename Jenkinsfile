@@ -8,6 +8,13 @@ pipeline {
         }
     }
     stages {
+        stage('Print') {
+            steps {
+                echo 'Test'
+                sh 'printenv'
+                echo 'Pulling...' + env.GIT_BRANCH
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn -B clean install'
@@ -23,7 +30,7 @@ pipeline {
                 archiveArtifacts artifacts: '**/target/*.jar'
             }
         }
-        stage('Set BuildNumber') {
+        /*stage('Set BuildNumber') {
             steps {
                 script {
                     VERSION = readMavenPom().getVersion();
@@ -31,7 +38,7 @@ pipeline {
                 echo "Get version: ${VERSION}"
                 sh "mvn versions:set -DnewVersion=${VERSION}.$BUILD_NUMBER"
             }
-        }
+        }*/
         stage('Deploy') {
             steps {
                 configFileProvider([configFile(fileId: 'afe25550-309e-40c1-80ad-59da7989fb4e', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
