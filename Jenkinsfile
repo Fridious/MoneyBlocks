@@ -12,7 +12,6 @@ pipeline {
             steps {
                 echo 'Test dev3'
                 sh 'printenv'
-                echo 'HALLO'
                 echo 'Pulling...' + env.GIT_BRANCH
             }
         }
