@@ -1,7 +1,7 @@
 name: MoneyBlocks
 author: Fridious
 description: Get money on block break with a specified chance.
-version: ${project.version}
+version: ${project.version}-DEV
 main: de.fridious.moneyblocks.MoneyBlocks
 softdepend:
 - Vault
